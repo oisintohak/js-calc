@@ -1,0 +1,19 @@
+{
+  "name": "js-calc",
+  "version": "1.0.0",
+  "description": "JavaScript Calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oisintohak/js-calc.git"
+  },
+  "author": "Oisin Tohak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oisintohak/js-calc/issues"
+  },
+  "homepage": "https://github.com/oisintohak/js-calc#readme"
+}
