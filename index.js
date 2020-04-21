@@ -9,24 +9,35 @@ const DOMselectors = {
 const state = {
 }
 
-function updateView (value) {
-    if (value.id = 'clear') {
-        DOMselectors.viewer.innerHTML = 0;
-    }
-}
+
 
 // UI CONTROLLER
 const UIController = {
+    
+    updateView: (value) => {
+        DOMselectors.viewer.innerHTML = value;
+    }
 }
 
 const globalController = {
-
+    getInput: (event) => {
+        console.log(event);
+        //CLEAR:
+        if (event.id = 'clear') {
+            UIController.updateView('0');
+        }
+        
+        //NUMBERS:
+        if (event.target.classList.contains('num')) {
+            UIController.updateView(event.target.dataset.num);
+        }
+        // UIController.updateView(event);
+    }
 }
 
-const clearBut = document.querySelector('.clear');
-
-clearBut.addEventListener("click", updateView);
+// DOMselectors.clearButton.addEventListener("click", globalController.getInput);
 //EVENT LISTENERS:
 
 //NUMBERS:
-// DOMselectors.clearButton.addEventListener('click', updateView(0));
+
+DOMselectors.calculatorWrapper.addEventListener('click', globalController.getInput);
