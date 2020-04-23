@@ -13,12 +13,14 @@ const state = {
         //apply the operator if there was a previous value
     clearState: () => {
         state.viewerString = '0';
-        state.currentValue = '';
-        state.previousValue = '';
+        state.val1 = '';
+        state.val2 = '';
         state.currentOperator = '';
         state.previousOperator = '';
         state.result = 0;
     }
+
+    
 }
 
 state.clearState();
@@ -46,21 +48,34 @@ const inputController = {
 
         // EQUALS:
         if (event.target.id == 'equals') {
-            //CALCULATE RESULT:
-            state.viewerString = calcController.calculate();
-            //UPDATE UI
-            UIController.updateView();
-            // CLEAR previous value
-            state.currentValue = state.viewerString;
-            state.previousValue = '';
+            // check if no value, then display 0
+            if (!state.val1) {
+                state.clearState();
+            }
+
+            // check if only 1 value, clear any stored operator, then display value
+            else if (!state.val2) {
+                state.currentOperator = '';
+                UIController.updateView();
+            }
+
+            // check for 2 values & operator, then display result
+            else if (state.val1 != '' && state.val2 != '' && state.currentOperator != '') {
+                state.viewerString = calcController.calculate();
+                state.val2 = state.viewerString;
+                UIController.updateView();
+                // remove first value and operator
+                state.val1 = '';
+                state.currentOperator = '';
+            }
         }
         //NUMBERS:
         if (event.target.classList.contains('num')) {
             //add digit to current value
-            state.currentValue += `${event.target.dataset.num}`;
+            state.val1 += `${event.target.dataset.num}`;
 
             //update viewerstring
-            state.viewerString = state.currentValue;
+            state.viewerString = state.val1;
 
             // update UI
             UIController.updateView();
@@ -69,22 +84,40 @@ const inputController = {
 
         //OPERATOR (M/D/A/S):
         if (event.target.classList.contains('ops')) {
-            //check for previous value:
-            if (state.previousValue == '') {
-                //move current value to previous value:
-                state.previousValue = state.currentValue;                
-                
-                //set current value to 0:
-                state.currentValue = '';
-                
+            // replace current operator
+            if (!state.val1 && !state.val2 && !state.currentOperator) {
+                return;
+            }
+
+            if (!state.val2) {
                 //record operator
                 state.currentOperator = event.target.dataset.ops;
+
+                // if there's val1, move it to val2
+                if (val1 != '') {
+                    state.val2 = state.val1;
+                }
+
+            }
+
+            if (state.val1 != '' && state.val2 != '') {
+                if (!state.currentOperator) {
+                    //record operator if there is none
+                    state.currentOperator = event.target.dataset.ops;
+                }
+
+                // calculate result & asign to val2
+                state.val2 = calcController.calculate();
+                
+                // update UI
+                state.viewerString = state.val2; 
+                UIController.updateView();
             }
             else {
                 // calculate result using 2 values & previous operator
                 // asign result to previous value
-                state.previousValue = calcController.calculate();
-                state.viewerString = state.previousValue;
+                state.val2 = calcController.calculate();
+                state.viewerString = state.val2;
 
                 //record operator
                 state.currentOperator = event.target.dataset.ops;
@@ -102,9 +135,9 @@ const inputController = {
 const calcController = {
     calculate : () => {
         let result;
-        console.log(state.previousValue, state.currentValue);
-        let val1 = parseFloat(state.currentValue);
-        let val2 = parseFloat(state.previousValue);
+        console.log(state.val2, state.val1);
+        let val1 = parseFloat(state.val1);
+        let val2 = parseFloat(state.val2);
         console.log(val1, val2);
         // MULTIPLY:
         if(state.currentOperator == 'multiplication') {
