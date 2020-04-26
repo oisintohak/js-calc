@@ -39,15 +39,17 @@ const UIController = {
 
 const inputController = {
     getInputClick: (event) => {
-
+        let numList = ['0','1','2','3','4','5','6','7','8','9','.'];
+        let opsList = ['*','/','+','-'];
+        let opsNames = ['multiplication', 'division', 'addition', 'subtraction'];
         //CLEAR:
-        if (event.target.id == 'clear') {
+        if (event.target.id == 'clear' || event.code == 'KeyC') {
             state.clearState();
             UIController.updateView();
         }
 
         // EQUALS:
-        if (event.target.id == 'equals') {
+        if (event.target.id == 'equals' || event.key == '=') {
             // check if no value, then display 0
             if (!state.val1) {
                 state.clearState();
@@ -70,57 +72,77 @@ const inputController = {
             }
         }
         //NUMBERS:
-        if (event.target.classList.contains('num')) {
+        if (event.target.classList.contains('num') || numList.indexOf(event.key) != -1) {
             //add digit to current value
-            state.val1 += `${event.target.dataset.num}`;
+            if (event.type == 'click') {
+                state.val1 += `${event.target.dataset.num}`;
+            }
+            if (event.type == 'keypress') {
+                state.val1 += `${event.key}`;
+            }
 
             //update viewerstring
             state.viewerString = state.val1;
 
             // update UI
             UIController.updateView();
-            
         }
 
         //OPERATOR (M/D/A/S):
-        if (event.target.classList.contains('ops')) {
-            // replace current operator
+        if (event.target.classList.contains('ops') || opsList.indexOf(event.key) != -1) {
+            // record operator name
+            let opName;
+            // convert keypress to named operator
+            if (event.type == 'keypress') {
+                opName = opsNames[opsList.indexOf(event.key)];
+                console.log(opName);
+            }
+            // record click event
+            if (event.type == 'click') {
+                opName = event.target.dataset.ops;
+            }
+
+            //if nothing stored, do nothing:
             if (!state.val1 && !state.val2 && !state.currentOperator) {
                 return;
             }
 
-            if (!state.val2) {
+            
+            // if only val1
+            else if (!state.val2 && !state.currentOperator && state.val1 != '') {
                 //record operator
-                state.currentOperator = event.target.dataset.ops;
+                state.currentOperator = opName;
 
-                // if there's val1, move it to val2
-                if (val1 != '') {
-                    state.val2 = state.val1;
-                }
+                //move val1 to val2
+                state.val2 = state.val1;
 
+                //clear val1
+                state.val1 = '';
             }
 
-            if (state.val1 != '' && state.val2 != '') {
-                if (!state.currentOperator) {
-                    //record operator if there is none
-                    state.currentOperator = event.target.dataset.ops;
-                }
+            // if only val1 & operator
+            else if (!state.val2 && state.val1 != '' && state.currentOperator != '') {
+                //record operator
+                state.currentOperator = opName;
+            }
 
+            // if there's val2 but no val1
+            else if (state.val2 != '' && !state.val1) {
+                //record operator
+                state.currentOperator = opName;
+            }
+
+            // if val1 & val2
+            else if (state.val1 != '' && state.val2 != '') {
                 // calculate result & asign to val2
                 state.val2 = calcController.calculate();
+
+                // clear val1
+                state.val1 = '';
                 
                 // update UI
                 state.viewerString = state.val2; 
                 UIController.updateView();
-            }
-            else {
-                // calculate result using 2 values & previous operator
-                // asign result to previous value
-                state.val2 = calcController.calculate();
-                state.viewerString = state.val2;
-
-                //record operator
-                state.currentOperator = event.target.dataset.ops;
             }
         }
         
@@ -166,3 +188,5 @@ const calcController = {
 //NUMBERS:
 
 DOMselectors.calculatorWrapper.addEventListener('click', inputController.getInputClick);
+window.addEventListener('keypress', inputController.getInputClick);
+
