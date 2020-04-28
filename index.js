@@ -42,6 +42,7 @@ const inputController = {
         let numList = ['0','1','2','3','4','5','6','7','8','9','.'];
         let opsList = ['*','/','+','-'];
         let opsNames = ['multiplication', 'division', 'addition', 'subtraction'];
+        
         //CLEAR:
         if (event.target.id == 'clear' || event.code == 'KeyC') {
             state.clearState();
@@ -73,13 +74,21 @@ const inputController = {
         }
         //NUMBERS:
         if (event.target.classList.contains('num') || numList.indexOf(event.key) != -1) {
+            let val;
             //add digit to current value
             if (event.type == 'click') {
-                state.val1 += `${event.target.dataset.num}`;
+                val = `${event.target.dataset.num}`;
             }
             if (event.type == 'keypress') {
-                state.val1 += `${event.key}`;
+                val = `${event.key}`;
             }
+            
+            // check for previous decimal
+            if (state.val1.indexOf('.') != -1 && val == '.') {
+                return;
+            }
+
+            state.val1 += val;
 
             //update viewerstring
             state.viewerString = state.val1;
@@ -184,9 +193,9 @@ const calcController = {
 }
 
 //EVENT LISTENERS:
-
-//NUMBERS:
-
 DOMselectors.calculatorWrapper.addEventListener('click', inputController.getInputClick);
 window.addEventListener('keypress', inputController.getInputClick);
+
+const button = document.querySelector('button');
+mdc.ripple.MDCRipple.attachTo(button);
 

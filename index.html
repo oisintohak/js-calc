@@ -3,35 +3,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
+    rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
 <h1>JS CALC</h1>
 
 <div id="calculator-wrapper" class="calculator-wrapper">
 
-  <button id="clear" class="clear">C</button>
+  <button id="clear" class="clear mdc-icon-button">C</button>
 
-  <div id="viewer" class="viewer">0</div>
+  <div id="viewer" class="viewer mdc-">0</div>
 
-  <button class="num" data-num="7">7</button>
-  <button class="num" data-num="8">8</button>
-  <button class="num" data-num="9">9</button>
-  <button data-ops="addition" class="ops">+</button>
+  <button class="num mdc-icon-button" data-num="7">7</button>
+  <button class="num mdc-icon-button" data-num="8">8</button>
+  <button class="num mdc-icon-button" data-num="9">9</button>
+  <button data-ops="addition" class="ops mdc-icon-button">+</button>
 
-  <button class="num" data-num="4">4</button>
-  <button class="num" data-num="5">5</button>
-  <button class="num" data-num="6">6</button>
-  <button data-ops="subtraction" class="ops">-</button>
+  <button class="num mdc-icon-button" data-num="4">4</button>
+  <button class="num mdc-icon-button" data-num="5">5</button>
+  <button class="num mdc-icon-button" data-num="6">6</button>
+  <button data-ops="subtraction" class="ops mdc-icon-button">-</button>
 
-  <button class="num" data-num="1">1</button>
-  <button class="num" data-num="2">2</button>
-  <button class="num" data-num="3">3</button>
-  <button data-ops="multiplication" class="ops">*</button>
+  <button class="num mdc-icon-button" data-num="1">1</button>
+  <button class="num mdc-icon-button" data-num="2">2</button>
+  <button class="num mdc-icon-button" data-num="3">3</button>
+  <button data-ops="multiplication" class="ops mdc-icon-button">*</button>
 
-  <button class="num" data-num="0">0</button>
-  <button class="num" data-num=".">.</button>
-  <button id="equals" class="equals" data-result="">=</button>
-  <button data-ops="division" class="ops">/</button>
+  <button class="num mdc-icon-button" data-num="0">0</button>
+  <button class="num mdc-icon-button" data-num=".">.</button>
+  <button id="equals" class="equals mdc-icon-button" data-result="">=</button>
+  <button data-ops="division" class="ops mdc-icon-button">/</button>
 </div>
 
 
