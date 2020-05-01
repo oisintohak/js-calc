@@ -17,21 +17,22 @@ const state = {
         state.val2 = '';
         state.currentOperator = '';
         state.previousOperator = '';
-        state.result = 0;
-    }
+        state.result = '';
+    },
 
-    
+    clearStored: (...params) => {
+        for (let item of params) {
+            state[item] = '';
+        }
+    }
 }
 
 state.clearState();
 
-
 // UI CONTROLLER
 const UIController = {
-    
     updateView: () => {
         DOMselectors.viewer.innerHTML = state.viewerString;
-        console.log(state);
     }
 }
 
@@ -53,27 +54,31 @@ const inputController = {
         if (event.target.id == 'equals' || event.key == '=') {
             // check if no value, then display 0
             if (!state.val1) {
-                state.clearState();
+                // state.clearState();
             }
 
             // check if only 1 value, clear any stored operator, then display value
             else if (!state.val2) {
-                state.currentOperator = '';
+                state.clearStored('currentOperator');
                 UIController.updateView();
             }
 
             // check for 2 values & operator, then display result
             else if (state.val1 != '' && state.val2 != '' && state.currentOperator != '') {
                 state.viewerString = calcController.calculate();
-                state.val2 = state.viewerString;
+                state.result = state.viewerString;
                 UIController.updateView();
-                // remove first value and operator
-                state.val1 = '';
-                state.currentOperator = '';
+                // remove values and operator
+                state.clearStored('val1', 'val2', 'currentOperator');
+                console.log(state);
             }
         }
         //NUMBERS:
         if (event.target.classList.contains('num') || numList.indexOf(event.key) != -1) {
+            // if last value was from equals, clear it
+            if (state.result != '') {
+                state.clearStored('result');
+            }
             let val;
             //add digit to current value
             if (event.type == 'click') {
@@ -99,12 +104,16 @@ const inputController = {
 
         //OPERATOR (M/D/A/S):
         if (event.target.classList.contains('ops') || opsList.indexOf(event.key) != -1) {
+            // if last value was from equals, move it to val2
+            if (state.result != '') {
+                state.val2 = state.result;
+                state.clearStored('result');
+            }
             // record operator name
             let opName;
             // convert keypress to named operator
             if (event.type == 'keypress') {
                 opName = opsNames[opsList.indexOf(event.key)];
-                console.log(opName);
             }
             // record click event
             if (event.type == 'click') {
@@ -115,7 +124,6 @@ const inputController = {
             if (!state.val1 && !state.val2 && !state.currentOperator) {
                 return;
             }
-
             
             // if only val1
             else if (!state.val2 && !state.currentOperator && state.val1 != '') {
@@ -126,7 +134,7 @@ const inputController = {
                 state.val2 = state.val1;
 
                 //clear val1
-                state.val1 = '';
+                state.clearStored('val1');
             }
 
             // if only val1 & operator
@@ -147,14 +155,17 @@ const inputController = {
                 state.val2 = calcController.calculate();
 
                 // clear val1
-                state.val1 = '';
-                
+                state.clearStored('val1');
+
+                // store operator
+                state.currentOperator = opName;
+
                 // update UI
                 state.viewerString = state.val2; 
                 UIController.updateView();
+                console.log(state);
             }
-        }
-        
+        }   
     }
 }
 
@@ -166,10 +177,8 @@ const inputController = {
 const calcController = {
     calculate : () => {
         let result;
-        console.log(state.val2, state.val1);
         let val1 = parseFloat(state.val1);
         let val2 = parseFloat(state.val2);
-        console.log(val1, val2);
         // MULTIPLY:
         if(state.currentOperator == 'multiplication') {
             result = val2 * val1;
@@ -186,7 +195,6 @@ const calcController = {
         if(state.currentOperator == 'subtraction') {
             result = val2 - val1;
         }
-        console.log(result);
         return result.toString(10);
 
     }
@@ -197,5 +205,5 @@ DOMselectors.calculatorWrapper.addEventListener('click', inputController.getInpu
 window.addEventListener('keypress', inputController.getInputClick);
 
 const button = document.querySelector('button');
-mdc.ripple.MDCRipple.attachTo(button);
+// mdc.ripple.MDCRipple.attachTo(button);
 
